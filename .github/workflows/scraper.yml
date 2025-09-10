@@ -23,5 +23,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install selenium gspread google-auth webdriver-manager
 
+      - name: Create credentials.json
+        run: echo "${{ secrets.GOOGLE_CREDS }}" > credentials.json
+
       - name: Run scraper
         run: python scraper.py
