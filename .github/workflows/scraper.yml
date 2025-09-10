@@ -1,18 +1,41 @@
 name: Weekly Scraper
+
 on:
   schedule:
     - cron: '0 9 * * 1' # every Monday 9 AM UTC
   workflow_dispatch:
+
 jobs:
   run_scraper:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Checkout repository code
+        uses: actions/checkout@b4ffde7fd16d9f9c7b6f3a3c5f8f3f7b8e2f8a60 # <-- replace with latest SHA
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@c8b6eebc9e5a6b7e3d3e2d6a2c3e4f9f5a6e7a9d # <-- replace with latest SHA
         with:
           python-version: 3.11
+
       - name: Install dependencies
-        run: pip install selenium gspread google-auth webdriver-manager
-      - name: Run scraper
+        run: |
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install selenium gspread google-auth webdriver-manager
+          fi
+
+      - name: Show Python version and installed packages
+        run: |
+          python --version
+          pip list
+
+      - name: Run scraper script
         run: python scraper.py
+
+      - name: Archive scraper output (if any)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scraper-output
+          path: ./output/
