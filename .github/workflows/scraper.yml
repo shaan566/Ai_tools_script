@@ -26,5 +26,7 @@ jobs:
       - name: Create credentials.json
         run: echo "${{ secrets.GOOGLE_CREDS }}" > credentials.json
 
+
+
       - name: Run scraper
         run: python scraper.py
